@@ -1,5 +1,7 @@
 <?php
 
+namespace SegmentIO;
+
 class Analytics_Consumer_File extends Analytics_Consumer {
 
   private $file_handle;
@@ -25,7 +27,7 @@ class Analytics_Consumer_File extends Analytics_Consumer {
       } else {
         chmod($options["filename"], 0777);
       }
-    } catch (Exception $e) {
+    } catch (\Exception $e) {
       $this->handleError($e->getCode(), $e->getMessage());
     }
   }

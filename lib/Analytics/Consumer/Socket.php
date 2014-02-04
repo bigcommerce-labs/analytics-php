@@ -1,5 +1,7 @@
 <?php
 
+namespace SegmentIO;
+
 class Analytics_Consumer_Socket extends Analytics_QueueConsumer {
 
   protected $type = "Socket";
@@ -65,7 +67,7 @@ class Analytics_Consumer_Socket extends Analytics_QueueConsumer {
 
       return $socket;
 
-    } catch (Exception $e) {
+    } catch (\Exception $e) {
       $this->handleError($e->getCode(), $e->getMessage());
       $this->socket_failed = true;
       return false;
@@ -89,7 +91,7 @@ class Analytics_Consumer_Socket extends Analytics_QueueConsumer {
     while (!$closed && $bytes_written < $bytes_total) {
       try {
         $written = fwrite($socket, substr($req, $bytes_written));
-      } catch (Exception $e) {
+      } catch (\Exception $e) {
         $this->handleError($e->getCode(), $e->getMessage());
         $closed = true;
       }
