@@ -1,9 +1,15 @@
 <?php
 
-class Analytics_Consumer_File extends Analytics_Consumer {
-
+class Analytics_Consumer_Fornax extends Analytics_Consumer {
   private $file_handle;
-  protected $type = "File";
+  protected $type = "Fornax";
+  const LOG_TTL = 300; // 5 minutes
+
+  public function getFilename()
+  {
+    $filename = getmypid() . '_' . (floor(time() / self::LOG_TTL) * self::LOG_TTL) . '.ldjson';
+    return $this->options['fornax_base_path'] . $filename;
+  }
 
   /**
    * The file consumer writes track and identify calls to a file.
@@ -14,11 +20,12 @@ class Analytics_Consumer_File extends Analytics_Consumer {
   public function __construct($secret, $options = array()) {
     // default options
     $options = array_merge(array(
-      'filepermissions' => 0777,
-      'filename' => sys_get_temp_dir() . DIRECTORY_SEPARATOR . "analytics.log"
+      'filepermissions' => 0777
     ), $options);
 
     parent::__construct($secret, $options);
+
+    $options['filename'] = $this->getFilename();
 
     try {
       $this->file_handle = fopen($options["filename"], "a");
@@ -107,9 +114,16 @@ class Analytics_Consumer_File extends Analytics_Consumer {
    * @return [boolean] whether the request succeeded
    */
   private function write($body) {
-
     if (!$this->file_handle)
       return false;
+
+    if (array_key_exists('secret', $body)) {
+      unset($body['secret']);
+    }
+
+    if (!empty($this->options['anonymousId'])) {
+      $body['anonymousId'] = $this->options['anonymousId'];
+    }
 
     $content = json_encode($body);
     $content.= "\n";

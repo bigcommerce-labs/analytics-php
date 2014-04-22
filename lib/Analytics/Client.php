@@ -1,12 +1,11 @@
 <?php
 
-namespace SegmentIO;
-
 require(__DIR__ . '/Consumer.php');
 require(__DIR__ . '/QueueConsumer.php');
 require(__DIR__ . '/Consumer/File.php');
 require(__DIR__ . '/Consumer/ForkCurl.php');
 require(__DIR__ . '/Consumer/Socket.php');
+require(__DIR__ . '/Consumer/Fornax.php');
 
 class Analytics_Client {
 
@@ -25,15 +24,25 @@ class Analytics_Client {
     $consumers = array(
       "socket"     => "Analytics_Consumer_Socket",
       "file"       => "Analytics_Consumer_File",
-      "fork_curl"  => "Analytics_Consumer_ForkCurl"
+      "fork_curl"  => "Analytics_Consumer_ForkCurl",
+      "fornax"     => "Analytics_Consumer_Fornax"
     );
 
     # Use our socket consumer by default
-    $consumer_type = isset($options["consumer"]) ? $options["consumer"] :
+    $consumer_types = isset($options["consumer"]) ? $options["consumer"] :
                                                    "socket";
-    $Consumer = __NAMESPACE__ . '\\' . $consumers[$consumer_type];
+    # support multiple consumers
+    $this->consumer = array();
 
-    $this->consumer = new $Consumer($secret, $options);
+    if (is_array($consumer_types)) {
+      foreach ($consumer_types as $consumer_type) {
+        $Consumer = $consumers[$consumer_type];
+        $this->consumer[] = new $Consumer($secret, $options);
+      }
+    } else {
+      $Consumer = $consumers[$consumer_types];
+      $this->consumer[] = new $Consumer($secret, $options);
+    }
   }
 
   public function __destruct() {
@@ -60,8 +69,15 @@ class Analytics_Client {
       $properties = null;
     }
 
-    return $this->consumer->track($user_id, $event, $properties, $context,
-                                    $timestamp);
+    array_walk($this->consumer, function($consumer) use ($user_id, $event, $properties, $context, $timestamp) {
+      $consumer->track(
+        $user_id,
+        $event,
+        $properties,
+        $context,
+        $timestamp
+      );
+    });
   }
 
   /**
@@ -83,8 +99,14 @@ class Analytics_Client {
       $traits = null;
     }
 
-    return $this->consumer->identify($user_id, $traits, $context,
-                                      $timestamp);
+    array_walk($this->consumer, function($consumer) use ($user_id, $traits, $context, $timestamp) {
+      $consumer->identify(
+        $user_id,
+        $traits,
+        $context,
+        $timestamp
+      );
+    });
   }
 
   /**

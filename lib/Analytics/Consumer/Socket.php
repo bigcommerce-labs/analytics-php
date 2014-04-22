@@ -1,7 +1,5 @@
 <?php
 
-namespace SegmentIO;
-
 class Analytics_Consumer_Socket extends Analytics_QueueConsumer {
 
   protected $type = "Socket";

@@ -1,7 +1,5 @@
 <?php
 
-namespace SegmentIO;
-
 if (!function_exists('json_encode')) {
     throw new \Exception('SegmentIO\Analytics needs the JSON PHP extension.');
 }
