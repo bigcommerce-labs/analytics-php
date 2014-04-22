@@ -14,19 +14,17 @@ class Analytics_Consumer_File extends Analytics_Consumer {
    *     string "filename" - where to log the analytics calls
    */
   public function __construct($secret, $options = array()) {
-
-    if (!isset($options["filename"]))
-      $options["filename"] = sys_get_temp_dir() . DIRECTORY_SEPARATOR . "analytics.log";
+    // default options
+    $options = array_merge(array(
+      'filepermissions' => 0777,
+      'filename' => sys_get_temp_dir() . DIRECTORY_SEPARATOR . "analytics.log"
+    ), $options);
 
     parent::__construct($secret, $options);
 
     try {
       $this->file_handle = fopen($options["filename"], "a");
-      if (isset($options["filepermissions"])) {
-        chmod($options["filename"], $options["filepermissions"]);
-      } else {
-        chmod($options["filename"], 0777);
-      }
+      chmod($options["filename"], $options["filepermissions"]);
     } catch (\Exception $e) {
       $this->handleError($e->getCode(), $e->getMessage());
     }
