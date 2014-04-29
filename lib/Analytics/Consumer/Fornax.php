@@ -57,7 +57,6 @@ class Analytics_Consumer_Fornax extends Analytics_Consumer {
     }
 
     $body = array(
-      "secret"     => $this->secret,
       "userId"    => $user_id,
       "event"      => $event,
       "properties" => $properties,
@@ -79,7 +78,6 @@ class Analytics_Consumer_Fornax extends Analytics_Consumer {
   public function identify($user_id, $traits, $context, $timestamp) {
 
     $body = array(
-      "secret"     => $this->secret,
       "userId"    => $user_id,
       "traits"     => $traits,
       "context"    => $context,
@@ -101,7 +99,6 @@ class Analytics_Consumer_Fornax extends Analytics_Consumer {
   public function alias($from, $to, $context, $timestamp) {
 
     $body = array(
-      "secret"     => $this->secret,
       "from"       => $from,
       "to"         => $to,
       "context"    => $context,
@@ -120,10 +117,6 @@ class Analytics_Consumer_Fornax extends Analytics_Consumer {
   private function write($body) {
     if (!$this->file_handle)
       return false;
-
-    if (array_key_exists('secret', $body)) {
-      unset($body['secret']);
-    }
 
     if (!empty($this->options['anonymousId'])) {
       $body['anonymousId'] = $this->options['anonymousId'];
