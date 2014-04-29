@@ -46,6 +46,12 @@ class Analytics_Client {
   }
 
   public function __destruct() {
+    if (is_array($this->consumer)) {
+      foreach ($this->consumer as $consumer) {
+        $consumer->__destruct();
+      }
+      return;
+    }
     $this->consumer->__destruct();
   }
 
