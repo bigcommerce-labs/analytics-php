@@ -58,7 +58,7 @@ class Analytics_Consumer_Fornax extends Analytics_Consumer {
 
     $body = array(
       "secret"     => $this->secret,
-      "user_id"    => $user_id,
+      "userId"    => $user_id,
       "event"      => $event,
       "properties" => $properties,
       "timestamp"  => $timestamp,
@@ -80,7 +80,7 @@ class Analytics_Consumer_Fornax extends Analytics_Consumer {
 
     $body = array(
       "secret"     => $this->secret,
-      "user_id"    => $user_id,
+      "userId"    => $user_id,
       "traits"     => $traits,
       "context"    => $context,
       "timestamp"  => $timestamp,
