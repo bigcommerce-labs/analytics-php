@@ -52,6 +52,10 @@ class Analytics_Consumer_Fornax extends Analytics_Consumer {
    */
   public function track($user_id, $event, $properties, $context, $timestamp) {
 
+    if (isset($this->options['defaultProperties'])) {
+      $properties = array_merge($properties, $this->options['defaultProperties']);
+    }
+
     $body = array(
       "secret"     => $this->secret,
       "user_id"    => $user_id,
