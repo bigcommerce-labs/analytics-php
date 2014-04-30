@@ -51,6 +51,11 @@ class Analytics_Consumer_Fornax extends Analytics_Consumer {
    * @return [boolean] whether the track call succeeded
    */
   public function track($user_id, $event, $properties, $context, $timestamp) {
+    // Fornax will drop events that do not contain a period
+    if (!strpos($event, '.')) {
+      // Append MissingDomain. prefix, so we can group and track these events that do not conform
+      $event = 'MissingDomain.' . ltrim($event, '.');
+    }
 
     if (isset($this->options['defaultProperties'])) {
       $properties = array_merge($properties, $this->options['defaultProperties']);
