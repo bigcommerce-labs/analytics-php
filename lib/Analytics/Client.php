@@ -75,15 +75,17 @@ class Analytics_Client {
       $properties = null;
     }
 
-    array_walk($this->consumer, function($consumer) use ($user_id, $event, $properties, $context, $timestamp) {
-      $consumer->track(
+    $returnValue = array_map(function($consumer) use ($user_id, $event, $properties, $context, $timestamp) {
+      return $consumer->track(
         $user_id,
         $event,
         $properties,
         $context,
         $timestamp
       );
-    });
+    }, $this->consumer);
+
+    return array_combine($this->getConsumerNames(), $returnValue);
   }
 
   /**
@@ -105,14 +107,27 @@ class Analytics_Client {
       $traits = null;
     }
 
-    array_walk($this->consumer, function($consumer) use ($user_id, $traits, $context, $timestamp) {
-      $consumer->identify(
+    $returnValue = array_map(function($consumer) use ($user_id, $traits, $context, $timestamp) {
+      return $consumer->identify(
         $user_id,
         $traits,
         $context,
         $timestamp
       );
-    });
+    }, $this->consumer);
+
+
+    return array_combine($this->getConsumerNames(), $returnValue);
+  }
+
+  public function getConsumerNames()
+  {
+    return array_map(
+      function($consumer) {
+        return get_class($consumer);
+      },
+      $this->consumer
+    );
   }
 
   /**
