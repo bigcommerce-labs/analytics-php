@@ -1,5 +1,7 @@
 <?php
 
+namespace SegmentIO;
+
 class Analytics_Consumer_Fornax extends Analytics_Consumer {
   private $file_handle;
   protected $type = "Fornax";

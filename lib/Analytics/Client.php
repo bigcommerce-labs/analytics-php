@@ -7,6 +7,8 @@ require(__DIR__ . '/Consumer/ForkCurl.php');
 require(__DIR__ . '/Consumer/Socket.php');
 require(__DIR__ . '/Consumer/Fornax.php');
 
+namespace SegmentIO;
+
 class Analytics_Client {
 
   private $consumer;
