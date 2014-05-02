@@ -24,10 +24,10 @@ class Analytics_Client {
   public function __construct($secret, $options = array()) {
 
     $consumers = array(
-      "socket"     => "Analytics_Consumer_Socket",
-      "file"       => "Analytics_Consumer_File",
-      "fork_curl"  => "Analytics_Consumer_ForkCurl",
-      "fornax"     => "Analytics_Consumer_Fornax"
+      "socket"     => "SegmentIO\\Analytics_Consumer_Socket",
+      "file"       => "SegmentIO\\Analytics_Consumer_File",
+      "fork_curl"  => "SegmentIO\\Analytics_Consumer_ForkCurl",
+      "fornax"     => "SegmentIO\\Analytics_Consumer_Fornax"
     );
 
     # Use our socket consumer by default
