@@ -1,4 +1,5 @@
 <?php
+namespace SegmentIO;
 
 require(__DIR__ . '/Consumer.php');
 require(__DIR__ . '/QueueConsumer.php');
@@ -7,7 +8,6 @@ require(__DIR__ . '/Consumer/ForkCurl.php');
 require(__DIR__ . '/Consumer/Socket.php');
 require(__DIR__ . '/Consumer/Fornax.php');
 
-namespace SegmentIO;
 
 class Analytics_Client {
 
