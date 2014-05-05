@@ -21,7 +21,7 @@ class ConsumerFileTest extends PHPUnit_Framework_TestCase {
 
   function testTrack() {
     $tracked = $this->client->track("some_user", "File PHP Event");
-    $this->assertTrue($tracked);
+    $this->assertTrue(array_shift($tracked));
     $this->checkWritten();
   }
 
@@ -32,13 +32,13 @@ class ConsumerFileTest extends PHPUnit_Framework_TestCase {
                     "birthday"  => time(),
                     ));
 
-    $this->assertTrue($identified);
+    $this->assertTrue(array_shift($identified));
     $this->checkWritten();
   }
 
   function testAlias () {
     $aliased = $this->client->alias("some_user", "new_user");
-    $this->assertTrue($aliased);
+    $this->assertTrue(array_shift($aliased));
     $this->checkWritten();
   }
 
@@ -49,7 +49,7 @@ class ConsumerFileTest extends PHPUnit_Framework_TestCase {
                                 "filename" => "/dev/xxxxxxx" ));
 
     $tracked = $client->track("some_user", "File PHP Event");
-    $this->assertFalse($tracked);
+    $this->assertFalse(array_shift($tracked));
   }
 
   function testFileSecurity() {

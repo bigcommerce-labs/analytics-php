@@ -15,7 +15,7 @@ class ConsumerSocketTest extends PHPUnit_Framework_TestCase {
 
   function testTrack() {
     $tracked = $this->client->track("some_user", "Socket PHP Event");
-    $this->assertTrue($tracked);
+    $this->assertTrue(array_shift($tracked));
   }
 
   function testIdentify() {
@@ -25,12 +25,12 @@ class ConsumerSocketTest extends PHPUnit_Framework_TestCase {
                     "birthday"  => time(),
                     ));
 
-    $this->assertTrue($identified);
+    $this->assertTrue(array_shift($identified));
   }
 
   function testAlias() {
     $aliased = $this->client->alias("some_user", "new_user");
-    $this->assertTrue($aliased);
+    $this->assertTrue(array_shift($aliased));
   }
 
   function testShortTimeout() {
@@ -39,10 +39,10 @@ class ConsumerSocketTest extends PHPUnit_Framework_TestCase {
                                           "consumer" => "socket" ));
 
     $tracked = $client->track("some_user", "Socket PHP Event");
-    $this->assertTrue($tracked);
+    $this->assertTrue(array_shift($tracked));
 
     $identified = $client->identify("some_user");
-    $this->assertTrue($identified);
+    $this->assertTrue(array_shift($identified));
     $client->__destruct();
   }
 

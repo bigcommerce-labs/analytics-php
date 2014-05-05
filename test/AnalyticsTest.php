@@ -12,7 +12,8 @@ class AnalyticsTest extends PHPUnit_Framework_TestCase {
 
   function testTrack() {
     $tracked = Analytics::track("some_user", "Module PHP Event");
-    $this->assertTrue($tracked);
+
+    $this->assertTrue(array_shift($tracked));
   }
 
   function testIdentify() {
@@ -22,12 +23,12 @@ class AnalyticsTest extends PHPUnit_Framework_TestCase {
                     "birthday"  => time(),
                     ));
 
-    $this->assertTrue($identified);
+    $this->assertTrue(array_shift($identified));
   }
 
   function testAlias() {
     $aliased = Analytics::alias("some_user", "new_user");
-    $this->assertTrue($aliased);
+    $this->assertTrue(array_shift($aliased));
   }
 }
 ?>
