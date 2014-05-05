@@ -2,10 +2,16 @@
 
 namespace SegmentIO;
 
-class Analytics_Consumer_File extends Analytics_Consumer {
-
+class Analytics_Consumer_Fornax extends Analytics_Consumer {
   private $file_handle;
-  protected $type = "File";
+  protected $type = "Fornax";
+  const LOG_TTL = 300; // 5 minutes
+
+  public function getFilename()
+  {
+    $filename = getmypid() . '_' . (floor(time() / self::LOG_TTL) * self::LOG_TTL) . '.ldjson';
+    return $this->options['fornax_base_path'] . $filename;
+  }
 
   /**
    * The file consumer writes track and identify calls to a file.
@@ -16,11 +22,12 @@ class Analytics_Consumer_File extends Analytics_Consumer {
   public function __construct($secret, $options = array()) {
     // default options
     $options = array_merge(array(
-      'filepermissions' => 0777,
-      'filename' => sys_get_temp_dir() . DIRECTORY_SEPARATOR . "analytics.log"
+      'filepermissions' => 0777
     ), $options);
 
     parent::__construct($secret, $options);
+
+    $options['filename'] = $this->getFilename();
 
     try {
       $this->file_handle = fopen($options["filename"], "a");
@@ -46,10 +53,18 @@ class Analytics_Consumer_File extends Analytics_Consumer {
    * @return [boolean] whether the track call succeeded
    */
   public function track($user_id, $event, $properties, $context, $timestamp) {
+    // Fornax will drop events that do not contain a period
+    if (!strpos($event, '.')) {
+      // Append MissingDomain. prefix, so we can group and track these events that do not conform
+      $event = 'MissingDomain.' . ltrim($event, '.');
+    }
+
+    if (isset($this->options['defaultProperties'])) {
+      $properties = array_merge($properties, $this->options['defaultProperties']);
+    }
 
     $body = array(
-      "secret"     => $this->secret,
-      "user_id"    => $user_id,
+      "userId"    => $user_id,
       "event"      => $event,
       "properties" => $properties,
       "timestamp"  => $timestamp,
@@ -70,8 +85,7 @@ class Analytics_Consumer_File extends Analytics_Consumer {
   public function identify($user_id, $traits, $context, $timestamp) {
 
     $body = array(
-      "secret"     => $this->secret,
-      "user_id"    => $user_id,
+      "userId"    => $user_id,
       "traits"     => $traits,
       "context"    => $context,
       "timestamp"  => $timestamp,
@@ -92,7 +106,6 @@ class Analytics_Consumer_File extends Analytics_Consumer {
   public function alias($from, $to, $context, $timestamp) {
 
     $body = array(
-      "secret"     => $this->secret,
       "from"       => $from,
       "to"         => $to,
       "context"    => $context,
@@ -109,9 +122,12 @@ class Analytics_Consumer_File extends Analytics_Consumer {
    * @return [boolean] whether the request succeeded
    */
   private function write($body) {
-
     if (!$this->file_handle)
       return false;
+
+    if (!empty($this->options['anonymousId'])) {
+      $body['anonymousId'] = $this->options['anonymousId'];
+    }
 
     $content = json_encode($body);
     $content.= "\n";

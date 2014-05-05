@@ -17,7 +17,7 @@ class ConsumerForkCurlTest extends PHPUnit_Framework_TestCase {
 
   function testTrack() {
     $tracked = $this->client->track("some_user", "PHP Fork Curl'd\" Event");
-    $this->assertTrue($tracked);
+    $this->assertTrue(array_shift($tracked));
   }
 
   function testIdentify() {
@@ -27,12 +27,12 @@ class ConsumerForkCurlTest extends PHPUnit_Framework_TestCase {
                     "birthday"  => time(),
                     ));
 
-    $this->assertTrue($identified);
+    $this->assertTrue(array_shift($identified));
   }
 
   function testAlias() {
     $aliased = $this->client->alias("some_user", "new_user");
-    $this->assertTrue($aliased);
+    $this->assertTrue(array_shift($aliased));
   }
 }
 ?>
