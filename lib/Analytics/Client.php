@@ -146,7 +146,16 @@ class Analytics_Client {
 
     $timestamp = $this->formatTime($timestamp);
 
-    return $this->consumer->alias($from, $to, $context, $timestamp);
+    $returnValue = array_map(function($consumer) use ($from, $to, $timestamp, $context) {
+      return $consumer->alias(
+        $from,
+        $to,
+        $context,
+        $timestamp
+      );
+    }, $this->consumer);
+
+    return array_combine($this->getConsumerNames(), $returnValue);
   }
 
   /**
