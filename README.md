@@ -1,7 +1,7 @@
 analytics-php
 ==============
 
-[![Build Status](https://travis-ci.org/segmentio/analytics-php.png?branch=master)](https://travis-ci.org/segmentio/analytics-php)
+[![Build Status](https://travis-ci.org/bigcommerce-labs/analytics-php.svg?branch=master)](https://travis-ci.org/bigcommerce-labs/analytics-php)
 
 analytics-php is a php client for [Segment.io](https://segment.io)
 
