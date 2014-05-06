@@ -59,6 +59,17 @@ class Analytics_Consumer_Fornax extends Analytics_Consumer {
       $event = 'MissingDomain.' . ltrim($event, '.');
     }
 
+    if (!is_array($properties)) {
+      // if a non-array was passed, create an array out of it
+      if (!empty($properties)) {
+        $properties = array(
+          'message' => $properties
+        );
+      } else {
+        $properties = array();
+      }
+    }
+
     if (isset($this->options['defaultProperties'])) {
       $properties = array_merge($properties, $this->options['defaultProperties']);
     }
