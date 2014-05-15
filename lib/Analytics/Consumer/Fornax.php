@@ -140,6 +140,10 @@ class Analytics_Consumer_Fornax extends Analytics_Consumer {
       $body['anonymousId'] = $this->options['anonymousId'];
     }
 
+    if (isset($this->options['defaultContext']) && is_array($this->options['defaultContext'])) {
+      $body['context'] = array_merge($this->options['defaultContext'], $body['context']);
+    }
+
     $content = json_encode($body);
     $content.= "\n";
 
