@@ -87,7 +87,8 @@ class Analytics_Client {
       );
     }, $this->consumer);
 
-    return array_combine($this->getConsumerNames(), $returnValue);
+    $consumerNames = $this->getConsumerNames();
+    return $this->possiblyEmptyResults($consumerNames, $returnValue);
   }
 
   /**
@@ -119,7 +120,8 @@ class Analytics_Client {
     }, $this->consumer);
 
 
-    return array_combine($this->getConsumerNames(), $returnValue);
+    $consumerNames = $this->getConsumerNames();
+    return $this->possiblyEmptyResults($consumerNames, $returnValue);
   }
 
   public function getConsumerNames()
@@ -155,7 +157,8 @@ class Analytics_Client {
       );
     }, $this->consumer);
 
-    return array_combine($this->getConsumerNames(), $returnValue);
+    $consumerNames = $this->getConsumerNames();
+    return $this->possiblyEmptyResults($consumerNames, $returnValue);
   }
 
   /**
@@ -171,6 +174,18 @@ class Analytics_Client {
     return date("c", $timestamp);
   }
 
+  /**
+   * Return either an empty array or the combined result of key => value mappings of each of the arrays passed in
+   * This is necessary because `array_combine` causes a PHP fatal if both arrays are empty.
+   *
+   * @param $consumers The list of consumer names
+   * @param $results The result of calling each consumer with the event data
+   * @return array Either an empty array or the map of consumers to their results
+   */
+  private function possiblyEmptyResults($consumers, $results)
+  {
+    return empty($consumers) && empty($results) ? array() : array_combine($consumers, $results);
+  }
 
   /**
    * Add the segment.io context to the request
