@@ -30,8 +30,10 @@ class Analytics_Consumer_Fornax extends Analytics_Consumer {
     $options['filename'] = $this->getFilename();
 
     try {
-      $this->file_handle = fopen($options["filename"], "a");
-      chmod($options["filename"], $options["filepermissions"]);
+        $this->file_handle = @fopen($options["filename"], "a");
+        if ($this->file_handle) {
+            chmod($options["filename"], $options["filepermissions"]);
+        }
     } catch (\Exception $e) {
       $this->handleError($e->getCode(), $e->getMessage());
     }
